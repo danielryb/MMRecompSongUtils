@@ -6,7 +6,8 @@ const float block_placement_speed = 80.0f; // 20.0f
 const float block_return_speed = 100.0f; // 40.0f
 
 #include "overlays/actors/ovl_Bg_F40_Block/z_bg_f40_block.h"
-#include "objects/object_f40_obj/object_f40_obj.h"
+
+extern CollisionHeader gStoneTowerBlockCol;
 
 #define FLAGS (ACTOR_FLAG_10)
 
