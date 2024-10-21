@@ -2,8 +2,6 @@
 #include "global.h"
 #include "rt64_extended_gbi.h"
 
-RECOMP_IMPORT("*", int recomp_printf(const char* fmt, ...));
-
 #define PINK_DEKU_FLOWER_LIMB_BACK_RIGHT_PETAL ((0x1BC - 0x198) / sizeof(Vec3s))
 extern u8 gameplay_keep_Blob_02900C[];
 extern u8 gameplay_keep_Blob_0281DC[];
