@@ -24,7 +24,7 @@ RECOMP_PATCH void func_80848640(PlayState* play, Player* this) {
 
     if (torch2 != NULL) {
         play->actorCtx.elegyShells[this->transformation] = torch2;
-        Play_SetupRespawnPoint(&play->state, this->transformation + 3, PLAYER_PARAMS(0xFF, PLAYER_INITMODE_B));
+        Play_SetupRespawnPoint(play, this->transformation + 3, PLAYER_PARAMS(0xFF, PLAYER_START_MODE_B));
     }
 
     effChange = Actor_Spawn(&play->actorCtx, play, ACTOR_EFF_CHANGE, this->actor.world.pos.x, this->actor.world.pos.y,
@@ -37,7 +37,6 @@ RECOMP_PATCH void func_80848640(PlayState* play, Player* this) {
     }
 }
 
-
 void func_8085B384(Player* this, PlayState* play);
 
 RECOMP_PATCH void Player_Action_88(Player* this, PlayState* play) {
@@ -47,8 +46,6 @@ RECOMP_PATCH void Player_Action_88(Player* this, PlayState* play) {
     //     func_8085B384(this, play);
     // } else if (this->av2.actionVar2 == 10) {
     //     func_80848640(play, this);
-    //     play->msgCtx.ocarinaMode = OCARINA_MODE_END;
-    //     func_8085B384(this, play);
     // }
     if (this->av2.actionVar2++ == 0) {
         func_80848640(play, this);

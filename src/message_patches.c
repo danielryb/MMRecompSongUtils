@@ -1,17 +1,19 @@
 #include "modding.h"
 #include "global.h"
 
-RECOMP_IMPORT("mm_message_hooks", void set_return_flag(void))
+RECOMP_IMPORT("mm_recomp_message_hooks", void set_return_flag(void))
 
 Actor* activeSongEffect;
 
-RECOMP_CALLBACK("mm_message_hooks", on_Message_Update) void on_Message_Update(PlayState* play) {
+void Message_ResetOcarinaButtonState(PlayState* play);
+
+RECOMP_CALLBACK("mm_recomp_message_hooks", on_Message_Update) void on_Message_Update(PlayState* play) {
     MessageContext* msgCtx = &play->msgCtx;
     Input* input = CONTROLLER1(&play->state);
 
     u8 msgMode = msgCtx->msgMode;
-    if ((msgMode >= MSGMODE_SONG_PLAYED)
-    && (msgMode <= MSGMODE_DISPLAY_SONG_PLAYED)) {
+    if ((msgMode >= MSGMODE_SONG_PLAYED) &&
+        (msgMode <= MSGMODE_16)) {
         // Allow skipping song playback.
         if (CHECK_BTN_ANY(input->press.button, BTN_A | BTN_B)) {
             play->msgCtx.ocarinaMode = OCARINA_MODE_ACTIVE;
@@ -21,7 +23,12 @@ RECOMP_CALLBACK("mm_message_hooks", on_Message_Update) void on_Message_Update(Pl
             if (msgCtx->ocarinaAction == OCARINA_ACTION_CHECK_NOTIME) {
                 msgCtx->ocarinaAction = OCARINA_ACTION_CHECK_NOTIME_DONE;
             }
-            msgCtx->msgMode = MSGMODE_17;
+
+            AudioOcarina_SetInstrument(OCARINA_INSTRUMENT_OFF);
+            Message_ResetOcarinaButtonState(play);
+            msgCtx->msgMode = MSGMODE_18;
+            msgCtx->stateTimer = 1;
+
             SEQCMD_STOP_SEQUENCE(SEQ_PLAYER_FANFARE, 0);
 
             if (msgCtx->ocarinaSongEffectActive) {
