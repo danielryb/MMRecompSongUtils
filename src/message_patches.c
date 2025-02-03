@@ -3,42 +3,7 @@
 
 RECOMP_IMPORT("mm_recomp_message_hooks", void set_return_flag(void))
 
-Actor* activeSongEffect;
-
-void Message_ResetOcarinaButtonState(PlayState* play);
-
-RECOMP_CALLBACK("mm_recomp_message_hooks", on_Message_Update) void on_Message_Update(PlayState* play) {
-    MessageContext* msgCtx = &play->msgCtx;
-    Input* input = CONTROLLER1(&play->state);
-
-    u8 msgMode = msgCtx->msgMode;
-    if ((msgMode >= MSGMODE_SONG_PLAYED) &&
-        (msgMode <= MSGMODE_16)) {
-        // Allow skipping song playback.
-        if (CHECK_BTN_ANY(input->press.button, BTN_A | BTN_B)) {
-            play->msgCtx.ocarinaMode = OCARINA_MODE_ACTIVE;
-            if (msgCtx->ocarinaAction == OCARINA_ACTION_FREE_PLAY) {
-                msgCtx->ocarinaAction = OCARINA_ACTION_FREE_PLAY_DONE;
-            }
-            if (msgCtx->ocarinaAction == OCARINA_ACTION_CHECK_NOTIME) {
-                msgCtx->ocarinaAction = OCARINA_ACTION_CHECK_NOTIME_DONE;
-            }
-
-            AudioOcarina_SetInstrument(OCARINA_INSTRUMENT_OFF);
-            Message_ResetOcarinaButtonState(play);
-            msgCtx->msgMode = MSGMODE_18;
-            msgCtx->stateTimer = 1;
-
-            SEQCMD_STOP_SEQUENCE(SEQ_PLAYER_FANFARE, 0);
-
-            if (msgCtx->ocarinaSongEffectActive) {
-                Actor_Kill(activeSongEffect);
-            }
-        }
-
-        set_return_flag();
-    }
-}
+Actor* activeSongEffect = NULL;
 
 extern s16 sOcarinaEffectActorIds[];
 extern s32 sOcarinaEffectActorParams[];
@@ -63,6 +28,55 @@ RECOMP_PATCH void Message_SpawnSongEffect(PlayState* play) {
             // @mod Store pointer to song VFX.
             activeSongEffect = Actor_Spawn(&play->actorCtx, play, ACTOR_OCEFF_WIPE4, player->actor.world.pos.x, player->actor.world.pos.y,
                         player->actor.world.pos.z, 0, 0, 0, 0);
+        }
+    }
+}
+
+void Message_ResetOcarinaButtonState(PlayState* play);
+
+RECOMP_CALLBACK("mm_recomp_message_hooks", on_Message_Update) void on_Message_Update(PlayState* play) {
+    MessageContext* msgCtx = &play->msgCtx;
+    Input* input = CONTROLLER1(&play->state);
+
+    u8 msgMode = msgCtx->msgMode;
+    if ((msgMode >= MSGMODE_SONG_PLAYED) &&
+        (msgMode <= MSGMODE_16)) {
+        // Allow skipping song playback.
+        if (CHECK_BTN_ANY(input->press.button, BTN_A | BTN_B)) {
+            if ((msgCtx->ocarinaAction >= OCARINA_ACTION_PROMPT_WIND_FISH_HUMAN) &&
+                (msgCtx->ocarinaAction <= OCARINA_ACTION_PROMPT_WIND_FISH_DEKU)) {
+                AudioOcarina_SetInstrument(OCARINA_INSTRUMENT_OFF);
+                Message_CloseTextbox(play);
+                play->msgCtx.ocarinaMode = OCARINA_MODE_END;
+            } else {
+                if (activeSongEffect == NULL) {
+                    Message_SpawnSongEffect(play);
+                }
+
+                msgCtx->ocarinaStaff->state = 0;
+
+                play->msgCtx.ocarinaMode = OCARINA_MODE_ACTIVE;
+                if (msgCtx->ocarinaAction == OCARINA_ACTION_FREE_PLAY) {
+                    msgCtx->ocarinaAction = OCARINA_ACTION_FREE_PLAY_DONE;
+                }
+                if (msgCtx->ocarinaAction == OCARINA_ACTION_CHECK_NOTIME) {
+                    msgCtx->ocarinaAction = OCARINA_ACTION_CHECK_NOTIME_DONE;
+                }
+                AudioOcarina_SetInstrument(OCARINA_INSTRUMENT_OFF);
+                Message_ResetOcarinaButtonState(play);
+                msgCtx->msgMode = MSGMODE_18;
+                msgCtx->stateTimer = 1;
+
+                SEQCMD_STOP_SEQUENCE(SEQ_PLAYER_FANFARE, 0);
+
+                while (activeSongEffect->update) {
+                    activeSongEffect->update(activeSongEffect, play);
+                }
+
+                activeSongEffect = NULL;
+            }
+
+            set_return_flag();
         }
     }
 }
