@@ -2,7 +2,7 @@
 #include "global.h"
 
 struct CollisionPoly* D_801ED8B0; // 1 func
-s32 D_801ED8B4;                   // 2 funcs
+extern s32 D_801ED8B4;            // 2 funcs
 
 s32 func_800B7678(PlayState* play, Actor* actor, Vec3f* pos, s32 updBgCheckInfoFlags);
 
@@ -12,8 +12,17 @@ RECOMP_PATCH void Actor_UpdateBgCheckInfo(PlayState* play, Actor* actor, f32 wal
     s32 pad;
     Vec3f pos;
 
+    // @mod Fix actors clipping through dynapolys.
+    f32 dynapoly_y_disp = 0;
     if ((actor->floorBgId != BGCHECK_SCENE) && (actor->bgCheckFlags & BGCHECKFLAG_GROUND)) {
-        DynaPolyActor_TransformCarriedActor(&play->colCtx, actor->floorBgId, actor);
+        f32 og_y = actor->world.pos.y;
+        bool wasUpdated;
+
+        wasUpdated = DynaPolyActor_TransformCarriedActor(&play->colCtx, actor->floorBgId, actor);
+
+        if (wasUpdated) {
+            dynapoly_y_disp = actor->world.pos.y - og_y;
+        }
     }
 
     if (updBgCheckInfoFlags & UPDBGCHECKINFO_FLAG_1) {
@@ -57,20 +66,14 @@ RECOMP_PATCH void Actor_UpdateBgCheckInfo(PlayState* play, Actor* actor, f32 wal
             actor->bgCheckFlags &= ~BGCHECKFLAG_CEILING;
         }
     }
-    if (updBgCheckInfoFlags & UPDBGCHECKINFO_FLAG_4) {
+
+    if ((updBgCheckInfoFlags & UPDBGCHECKINFO_FLAG_4)) {
         WaterBox* waterbox;
         f32 y;
 
         // @mod Fix actors clipping through dynapolys.
-        // pos.y = actor->prevPos.y;
-        pos.y = actor->world.pos.y;
-
+        pos.y = actor->prevPos.y + dynapoly_y_disp;
         func_800B7678(play, actor, &pos, updBgCheckInfoFlags);
-
-        s32 bgId;
-        f32 floorHeight = BgCheck_EntityRaycastFloor5_2(play, &play->colCtx, &actor->floorPoly, &bgId, actor, &pos);
-        f32 distToFloor = actor->floorHeight - actor->world.pos.y;
-
         y = actor->world.pos.y;
 
         if (WaterBox_GetSurface1(play, &play->colCtx, actor->world.pos.x, actor->world.pos.z, &y, &waterbox)) {
