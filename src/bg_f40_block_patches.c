@@ -1,9 +1,4 @@
-#include "modding.h"
-#include "global.h"
-
-// @mod Custom speed for Stone Tower Blocks.
-const float block_placement_speed = 80.0f; // 20.0f
-const float block_return_speed = 80.0f; // 40.0f
+#include "song_utils.h"
 
 #include "overlays/actors/ovl_Bg_F40_Block/z_bg_f40_block.h"
 
@@ -57,12 +52,12 @@ RECOMP_PATCH void BgF40Block_Init(Actor* thisx, PlayState* play) {
         if (Flags_GetSwitch(play, BGF40BLOCK_GET_SWITCH_FLAG(&this->dyna.actor))) {
             this->actionFunc = func_80BC4530;
             // @mod Use custom speed for Stone Tower Blocks.
-            this->dyna.actor.speed = block_return_speed;
+            this->dyna.actor.speed = CFG_BLOCK_RETURN_SPEED;
             func_80BC3A2C(this, play);
         } else {
             this->actionFunc = func_80BC4380;
             // @mod Use custom speed for Stone Tower Blocks.
-            this->dyna.actor.speed = block_placement_speed;
+            this->dyna.actor.speed = CFG_BLOCK_PLACEMENT_SPEED;
             func_80BC3980(this, play);
         }
     } else {
@@ -74,7 +69,7 @@ RECOMP_PATCH void BgF40Block_Init(Actor* thisx, PlayState* play) {
 RECOMP_PATCH void func_80BC4228(BgF40Block* this, PlayState* play) {
     if (func_80BC3B00(this)) {
         // @mod Use custom speed for Stone Tower Blocks.
-        this->dyna.actor.speed = block_placement_speed;
+        this->dyna.actor.speed = CFG_BLOCK_PLACEMENT_SPEED;
         if (this->unk_160 < (this->path->count - 1)) {
             this->unk_164 = this->unk_160 + 1;
         } else {
@@ -112,7 +107,7 @@ RECOMP_PATCH void func_80BC4228(BgF40Block* this, PlayState* play) {
 RECOMP_PATCH void func_80BC4448(BgF40Block* this, PlayState* play) {
     if (func_80BC3B00(this)) {
         // @mod Use custom speed for Stone Tower Blocks.
-        this->dyna.actor.speed = block_return_speed;
+        this->dyna.actor.speed = CFG_BLOCK_RETURN_SPEED;
         if (this->unk_160 > 0) {
             this->unk_164 = this->unk_160 - 1;
         } else {
