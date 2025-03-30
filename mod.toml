@@ -71,6 +71,18 @@ options = [
 default = "button"
 
 [[manifest.config_options]]
+id = "fix_note_positions"
+name = "Fix Note Positions"
+description = """Adjusts mismatched note positions on ocarina's clef.
+"""
+type = "Enum"
+options = [
+    "on",
+    "off"
+]
+default = "on"
+
+[[manifest.config_options]]
 id = "elegy_anywhere"
 name = "Elegy of Emptiness Anywhere"
 description = """Allows Elegy of Emptiness effect outside of Ikana Canyon.

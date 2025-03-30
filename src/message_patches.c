@@ -100,3 +100,51 @@ RECOMP_CALLBACK("mm_recomp_message_hooks", mh_on_Message_DrawMain) void mh_on_Me
         }
     }
 }
+
+extern s16 sOcarinaButtonAPrimR;
+extern s16 sOcarinaButtonAPrimB;
+extern s16 sOcarinaButtonAPrimG;
+extern s16 sOcarinaButtonAEnvR;
+extern s16 sOcarinaButtonAEnvB;
+extern s16 sOcarinaButtonAEnvG;
+extern s16 sOcarinaButtonCPrimR;
+extern s16 sOcarinaButtonCPrimB;
+extern s16 sOcarinaButtonCPrimG;
+extern s16 sOcarinaButtonCEnvR;
+extern s16 sOcarinaButtonCEnvB;
+extern s16 sOcarinaButtonCEnvG;
+
+void Message_ResetOcarinaButtonAlphas(void);
+
+RECOMP_PATCH void Message_ResetOcarinaButtonState(PlayState* play) {
+    MessageContext* msgCtx = &play->msgCtx;
+
+    msgCtx->ocarinaButtonsPosY[OCARINA_BTN_A] = 189;
+    // @mod Fix mismatched note positions.
+    if (CFG_FIX_NOTE_POSITIONS) {
+        msgCtx->ocarinaButtonsPosY[OCARINA_BTN_C_DOWN] = 183;
+        msgCtx->ocarinaButtonsPosY[OCARINA_BTN_C_RIGHT] = 175;
+        msgCtx->ocarinaButtonsPosY[OCARINA_BTN_C_LEFT] = 172;
+        msgCtx->ocarinaButtonsPosY[OCARINA_BTN_C_UP] = 165;
+    } else {
+        msgCtx->ocarinaButtonsPosY[OCARINA_BTN_C_DOWN] = 184;
+        msgCtx->ocarinaButtonsPosY[OCARINA_BTN_C_RIGHT] = 179;
+        msgCtx->ocarinaButtonsPosY[OCARINA_BTN_C_LEFT] = 174;
+        msgCtx->ocarinaButtonsPosY[OCARINA_BTN_C_UP] = 169;
+    }
+
+    Message_ResetOcarinaButtonAlphas();
+
+    sOcarinaButtonAPrimR = 80;
+    sOcarinaButtonAPrimG = 150;
+    sOcarinaButtonAPrimB = 255;
+    sOcarinaButtonAEnvR = 10;
+    sOcarinaButtonAEnvG = 10;
+    sOcarinaButtonAEnvB = 10;
+    sOcarinaButtonCPrimR = 255;
+    sOcarinaButtonCPrimG = 255;
+    sOcarinaButtonCPrimB = 50;
+    sOcarinaButtonCEnvR = 10;
+    sOcarinaButtonCEnvG = 10;
+    sOcarinaButtonCEnvB = 10;
+}
