@@ -83,6 +83,18 @@ options = [
 default = "on"
 
 [[manifest.config_options]]
+id = "disable_ocarina_input_limit"
+name = "Disable ocarina's input limit"
+description = """Disable the vanilla input limit of 1 ocarina note per 2 frames.
+"""
+type = "Enum"
+options = [
+    "on",
+    "off"
+]
+default = "off"
+
+[[manifest.config_options]]
 id = "elegy_anywhere"
 name = "Elegy of Emptiness Anywhere"
 description = """Allows Elegy of Emptiness effect outside of Ikana Canyon.

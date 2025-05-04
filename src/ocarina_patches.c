@@ -97,13 +97,10 @@ RECOMP_FORCE_PATCH void AudioOcarina_CheckSongsWithoutMusicStaff(void) {
                     }
                 }
 
-                // This conditional is true if songIndex = i is detected
-                if (j == gOcarinaSongButtons[songIndex].numButtons) {
-                    sPlayedOcarinaSongIndexPlusOne = songIndex + 1;
-                    sIsOcarinaInputEnabled = false;
-                    sOcarinaFlags = 0;
-                }
-            }
-        }
+extern u8 sOcarinaDropInputTimer;
+
+RECOMP_HOOK("AudioOcarina_PlayControllerInput") void on_AudioOcarina_PlayControllerInput(u8 isOcarinaSfxSuppressedWhenCancelled) {
+    if (CFG_DISABLE_OCARINA_INPUT_LIMIT) {
+        sOcarinaDropInputTimer = 0;
     }
 }
