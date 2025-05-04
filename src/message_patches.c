@@ -35,7 +35,7 @@ extern s16 sLastPlayedSong;
 void Message_ResetOcarinaButtonState(PlayState* play);
 
 
-RECOMP_CALLBACK("mm_recomp_message_hooks", mh_on_Message_Update) void mh_on_Message_Update(PlayState* play) {
+RECOMP_CALLBACK("mm_recomp_message_hooks", mh_on_Message_Update) void on_Message_Update(PlayState* play) {
     MessageContext* msgCtx = &play->msgCtx;
     Input* input = CONTROLLER1(&play->state);
 
@@ -86,7 +86,7 @@ RECOMP_CALLBACK("mm_recomp_message_hooks", mh_on_Message_Update) void mh_on_Mess
     }
 }
 
-RECOMP_CALLBACK("mm_recomp_message_hooks", mh_on_Message_DrawMain) void mh_on_Message_DrawMain(PlayState* play, Gfx** gfxP) {
+RECOMP_CALLBACK("mm_recomp_message_hooks", mh_on_Message_DrawMain) void on_Message_DrawMain(PlayState* play, Gfx** gfxP) {
     MessageContext* msgCtx = &play->msgCtx;
 
     u8 msgMode = msgCtx->msgMode;

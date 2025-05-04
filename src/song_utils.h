@@ -2,8 +2,6 @@
 
 #include "modding.h"
 
-RECOMP_IMPORT("*", void recomp_printf(char* temp, ...));
-
 RECOMP_IMPORT("*", u32 recomp_get_config_u32(const char* key));
 RECOMP_IMPORT("*", double recomp_get_config_double(const char* key));
 
