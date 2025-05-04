@@ -81,6 +81,8 @@ RECOMP_CALLBACK("mm_recomp_message_hooks", mh_on_Message_Update) void mh_on_Mess
                 mh_Message_DrawMain_set_return_flag();
             }
         }
+    } else if (msgMode == MSGMODE_18) {
+        activeSongEffect = NULL;
     }
 }
 
