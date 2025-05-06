@@ -71,11 +71,13 @@ RECOMP_CALLBACK("mm_recomp_message_hooks", mh_on_Message_Update) void on_Message
 
                     SEQCMD_STOP_SEQUENCE(SEQ_PLAYER_FANFARE, 0);
 
-                    while (activeSongEffect->update) {
-                        activeSongEffect->update(activeSongEffect, play);
-                    }
+                    if (activeSongEffect != NULL) {
+                        while (activeSongEffect->update) {
+                            activeSongEffect->update(activeSongEffect, play);
+                        }
 
-                    activeSongEffect = NULL;
+                        activeSongEffect = NULL;
+                    }
                 }
 
                 mh_Message_DrawMain_set_return_flag();
